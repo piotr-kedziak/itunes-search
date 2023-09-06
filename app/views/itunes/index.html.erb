@@ -1,0 +1,8 @@
+<h1>Search on iTunes</h1>
+
+<%= form_with url: itunes_search_path, method: :post, id: "search_form", data: { turbo_frame: "results" } do %>
+  <%= text_field_tag :query, nil, placeholder: "Type album or artist name" %>
+  <%= submit_tag "Search" %>
+<% end %>
+
+<turbo-frame id="results"></turbo-frame>

@@ -1,0 +1,45 @@
+version: '3.7'
+services:
+  db:
+    image: 'postgres'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=itunes_development
+      - network.publish_host=127.0.0.1
+    ports:
+      - '65432:5432'
+
+  sidekiq: &env_rails
+    build: .
+    env_file: .env
+    depends_on:
+      - memcached
+      - db
+      - redis
+    command: bundle exec sidekiq -C ./config/sidekiq.yml RAILS_ENV=development
+    volumes:
+      - 'itunes-sync:/itunes:nocopy'
+      - 'gems:/bundle'
+
+  app:
+    <<: *env_rails
+    ports:
+      - '3030:3000'
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec puma --config config/puma.rb"
+
+  rspec:
+    <<: *env_rails
+    env_file: .env.test
+    command: ''
+
+  redis:
+    image: redis
+
+  memcached:
+    image: memcached
+
+volumes:
+  itunes-sync:
+    external: true
+  gems: null

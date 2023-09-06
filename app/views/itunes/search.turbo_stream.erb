@@ -1,0 +1,10 @@
+<turbo-frame id="results">
+  <% @results.each do |result| %>
+    <div>
+      <h1><%= result[:artistName] %></h1>
+      <p>collectionId: <%= result[:collectionId] %></p>
+      <p>collectionName: <%= result[:collectionName] %></p>
+      <img src="<%= result[:artworkUrl100] %>" />
+    </div>
+  <% end %>
+</turbo-frame>
